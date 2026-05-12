@@ -67,28 +67,11 @@ export const api = {
   toggleCard: (id) => apiFetch(`${BASE}/cards/${id}/toggle`, { method: 'PATCH', headers: headers() }),
 
   // Attendance
-  scan: (card_code) => {
-    console.log('Enviando scan para código:', card_code);
-    return fetch(`${BASE}/attendance/scan`, { 
-      method: 'POST', 
-      headers: { 'Content-Type': 'application/json' }, 
-      body: JSON.stringify({ card_code }) 
-    }).then(res => {
-      console.log('Respuesta scan:', res.status, res.statusText);
-      if (!res.ok) {
-        // Si es 404, la ruta no existe
-        if (res.status === 404) {
-          throw new Error('Ruta de escaneo no encontrada en el servidor');
-        }
-        // Para otros errores, devolver la respuesta para que se maneje el JSON
-        return res;
-      }
-      return res;
-    }).catch(error => {
-      console.error('Error en scan:', error);
-      throw error;
-    });
-  },
+  scan: (card_code) => fetch(`${BASE}/attendance/scan`, { 
+    method: 'POST', 
+    headers: { 'Content-Type': 'application/json' }, 
+    body: JSON.stringify({ card_code }) 
+  }),
   getToday: () => apiFetch(`${BASE}/attendance/today`, { headers: headers() }),
   deleteLog: (id) => apiFetch(`${BASE}/attendance/${id}`, { method: 'DELETE', headers: headers() }),
   getBiweekly: (start, end) => apiFetch(`${BASE}/attendance/biweekly?start=${start}&end=${end}`, { headers: headers() }),

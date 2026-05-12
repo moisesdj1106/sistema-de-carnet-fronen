@@ -18,36 +18,42 @@ export default function ScanPage() {
     if (processingRef.current) return;
     processingRef.current = true;
     setError(''); setResult(null);
+    
     try {
       const res = await api.scan(cardCode.trim());
       
-      // Verificar si la respuesta es un error
+      // Si hay error 404 (ruta no existe en el backend)
+      if (res.status === 404) {
+        setError('⚠️ Servicio temporalmente no disponible. Intenta más tarde.');
+        processingRef.current = false;
+        return;
+      }
+      
+      // Para otros errores
       if (!res.ok) {
         try {
           const data = await res.json();
           setError(data.error || 'Código no válido');
         } catch {
-          // Si no se puede parsear JSON, usar el mensaje de error
-          if (res.status === 404) {
-            setError('Error del servidor: Ruta de escaneo no disponible');
-          } else {
-            setError(`Error ${res.status}: ${res.statusText}`);
-          }
+          setError(`Error ${res.status}: ${res.statusText}`);
         }
-      } else {
-        const data = await res.json();
-        setResult(data);
-        setTimeout(() => {
-          setResult(null);
-          processingRef.current = false; // liberar después de mostrar resultado
-        }, 5000);
-        return; // no liberar aún, esperar el timeout
+        processingRef.current = false;
+        return;
       }
+      
+      // Éxito
+      const data = await res.json();
+      setResult(data);
+      setTimeout(() => {
+        setResult(null);
+        processingRef.current = false;
+      }, 5000);
+      
     } catch (error) {
       console.error('Error en processCode:', error);
-      setError(error.message || 'Error de conexión con el servidor');
+      setError('Error de conexión con el servidor');
+      processingRef.current = false;
     }
-    processingRef.current = false;
   };
 
   const startScanner = async () => {
