@@ -53,14 +53,18 @@ export default function ScanPage() {
       }
 
       // Ajustar el manejo de event_type para evitar errores
-      const eventType = data.attendance?.event_type || 'desconocido';
+      const eventType = data.attendance?.event_type;
       const eventLabel = eventType === 'entry' ? '✅ ENTRADA' : eventType === 'exit' ? '🚪 SALIDA' : '❓ DESCONOCIDO';
+
+      if (!eventType) {
+        console.warn('Falta event_type en la respuesta:', data);
+      }
 
       setResult({
         ...data,
         attendance: {
           ...data.attendance,
-          event_type: eventType,
+          event_type: eventType || 'desconocido',
           event_label: eventLabel,
         },
       });
