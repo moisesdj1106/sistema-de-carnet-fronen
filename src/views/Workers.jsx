@@ -44,6 +44,14 @@ export default function Workers() {
     load();
   };
 
+  const handleDeletePhoto = async (id) => {
+    if (!confirm('¿Eliminar la foto de este trabajador?')) return;
+    const res = await api.deleteWorkerPhoto(id);
+    if (res.ok) {
+      load();
+    }
+  };
+
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
@@ -64,7 +72,15 @@ export default function Workers() {
               <tr key={w.id}>
                 <td>
                   {w.photo_url
-                    ? <img src={w.photo_url} alt="" style={{ width: 38, height: 38, borderRadius: '50%', objectFit: 'cover' }} />
+                    ? <div style={{ position: 'relative' }}>
+                        <img src={`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000'}${w.photo_url}`} alt="" style={{ width: 38, height: 38, borderRadius: '50%', objectFit: 'cover' }} />
+                        <button onClick={() => handleDeletePhoto(w.id)} style={{
+                          position: 'absolute', top: -5, right: -5,
+                          background: '#cc0000', color: 'white', border: 'none',
+                          borderRadius: '50%', width: 18, height: 18, fontSize: 10,
+                          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center'
+                        }}>×</button>
+                      </div>
                     : <div style={{ width: 38, height: 38, borderRadius: '50%', background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>👤</div>
                   }
                 </td>

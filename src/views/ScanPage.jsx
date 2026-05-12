@@ -163,21 +163,21 @@ export default function ScanPage() {
       {result && (
         <div className="scan-result">
           {result.worker.photo_url
-            ? <img src={result.worker.photo_url} alt="foto" />
+            ? <img src={`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000'}${result.worker.photo_url}`} alt="foto" style={{ width: 88, height: 88, borderRadius: '50%', objectFit: 'cover' }} />
             : <div style={{ width: 88, height: 88, borderRadius: '50%', background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 36, margin: '0 auto 12px' }}>👤</div>
           }
           <div className="worker-name">{result.worker.full_name}</div>
           <div className="worker-pos">{result.worker.position_name}</div>
           <div style={{
             display: 'inline-block', padding: '8px 28px', borderRadius: 24,
-            background: result.event_type === 'entry' ? '#e8f5e9' : '#fce4e4',
-            color: result.event_type === 'entry' ? '#2e7d32' : '#c62828',
+            background: result.attendance.event_type === 'entry' ? '#e8f5e9' : '#fce4e4',
+            color: result.attendance.event_type === 'entry' ? '#2e7d32' : '#c62828',
             fontWeight: 800, fontSize: 17, letterSpacing: 1,
           }}>
-            {result.event_type === 'entry' ? '✅ ENTRADA' : '🚪 SALIDA'}
+            {result.attendance.event_type === 'entry' ? '✅ ENTRADA' : '🚪 SALIDA'}
           </div>
           <div style={{ color: '#aaa', fontSize: 13, marginTop: 10 }}>
-            {new Date(result.logged_at).toLocaleTimeString('es-VE', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+            {result.attendance && result.attendance.logged_at ? new Date(result.attendance.logged_at).toLocaleTimeString('es-VE', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : new Date().toLocaleTimeString('es-VE', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
           </div>
         </div>
       )}

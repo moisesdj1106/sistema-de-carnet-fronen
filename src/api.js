@@ -34,6 +34,7 @@ export const api = {
   createWorker: (form) => apiFetch(`${BASE}/workers`, { method: 'POST', headers: headers(true), body: form }),
   updateWorker: (id, form) => apiFetch(`${BASE}/workers/${id}`, { method: 'PUT', headers: headers(true), body: form }),
   deleteWorker: (id) => apiFetch(`${BASE}/workers/${id}`, { method: 'DELETE', headers: headers() }),
+  deleteWorkerPhoto: (id) => apiFetch(`${BASE}/workers/${id}/photo`, { method: 'DELETE', headers: headers() }),
 
   // Cards
   getCards: () => apiFetch(`${BASE}/cards`, { headers: headers() }),

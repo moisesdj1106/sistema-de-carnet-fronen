@@ -64,7 +64,7 @@ export default function AttendanceToday() {
                 <td>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     {l.photo_url
-                      ? <img src={l.photo_url} alt="" style={{ width: 34, height: 34, borderRadius: '50%', objectFit: 'cover' }} />
+                      ? <img src={`http://localhost:4000${l.photo_url}`} alt="" style={{ width: 34, height: 34, borderRadius: '50%', objectFit: 'cover' }} />
                       : <div style={{ width: 34, height: 34, borderRadius: '50%', background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>👤</div>
                     }
                     <strong>{l.full_name}</strong>
@@ -77,7 +77,7 @@ export default function AttendanceToday() {
                   </span>
                 </td>
                 <td style={{ fontWeight: 600, whiteSpace: 'nowrap' }}>
-                  {new Date(l.logged_at).toLocaleTimeString('es-VE', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                  {l.logged_at ? new Date(l.logged_at).toLocaleTimeString('es-VE', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '--:--:--'}
                 </td>
                 <td>
                   <button
