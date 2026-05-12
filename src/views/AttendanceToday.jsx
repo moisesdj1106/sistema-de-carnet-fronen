@@ -64,7 +64,7 @@ export default function AttendanceToday() {
                 <td>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     {l.photo_url
-                      ? <img src={`http://localhost:4000${l.photo_url}`} alt="" style={{ width: 34, height: 34, borderRadius: '50%', objectFit: 'cover' }} />
+                      ? <img src={`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000'}${l.photo_url}`} alt="" style={{ width: 34, height: 34, borderRadius: '50%', objectFit: 'cover' }} />
                       : <div style={{ width: 34, height: 34, borderRadius: '50%', background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>👤</div>
                     }
                     <strong>{l.full_name}</strong>
