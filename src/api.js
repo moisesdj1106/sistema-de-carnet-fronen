@@ -37,7 +37,27 @@ export const api = {
   createWorker: (form) => apiFetch(`${BASE}/workers`, { method: 'POST', headers: headers(true), body: form }),
   updateWorker: (id, form) => apiFetch(`${BASE}/workers/${id}`, { method: 'PUT', headers: headers(true), body: form }),
   deleteWorker: (id) => apiFetch(`${BASE}/workers/${id}`, { method: 'DELETE', headers: headers() }),
-  deleteWorkerPhoto: (id) => apiFetch(`${BASE}/workers/${id}/photo`, { method: 'DELETE', headers: headers() }),
+  deleteWorkerPhoto: (id) => {
+    console.log('Eliminando foto del trabajador ID:', id);
+    return fetch(`${BASE}/workers/${id}/photo`, { 
+      method: 'DELETE', 
+      headers: headers() 
+    }).then(res => {
+      console.log('Respuesta delete photo:', res.status, res.statusText);
+      if (!res.ok) {
+        // Si es 404, la ruta no existe
+        if (res.status === 404) {
+          throw new Error('Ruta para eliminar foto no encontrada en el servidor');
+        }
+        // Para otros errores, devolver la respuesta para que se maneje el JSON
+        return res;
+      }
+      return res;
+    }).catch(error => {
+      console.error('Error en deleteWorkerPhoto:', error);
+      throw error;
+    });
+  },
 
   // Cards
   getCards: () => apiFetch(`${BASE}/cards`, { headers: headers() }),
@@ -47,7 +67,28 @@ export const api = {
   toggleCard: (id) => apiFetch(`${BASE}/cards/${id}/toggle`, { method: 'PATCH', headers: headers() }),
 
   // Attendance
-  scan: (card_code) => fetch(`${BASE}/attendance/scan`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ card_code }) }),
+  scan: (card_code) => {
+    console.log('Enviando scan para código:', card_code);
+    return fetch(`${BASE}/attendance/scan`, { 
+      method: 'POST', 
+      headers: { 'Content-Type': 'application/json' }, 
+      body: JSON.stringify({ card_code }) 
+    }).then(res => {
+      console.log('Respuesta scan:', res.status, res.statusText);
+      if (!res.ok) {
+        // Si es 404, la ruta no existe
+        if (res.status === 404) {
+          throw new Error('Ruta de escaneo no encontrada en el servidor');
+        }
+        // Para otros errores, devolver la respuesta para que se maneje el JSON
+        return res;
+      }
+      return res;
+    }).catch(error => {
+      console.error('Error en scan:', error);
+      throw error;
+    });
+  },
   getToday: () => apiFetch(`${BASE}/attendance/today`, { headers: headers() }),
   deleteLog: (id) => apiFetch(`${BASE}/attendance/${id}`, { method: 'DELETE', headers: headers() }),
   getBiweekly: (start, end) => apiFetch(`${BASE}/attendance/biweekly?start=${start}&end=${end}`, { headers: headers() }),
