@@ -14,7 +14,10 @@ async function apiFetch(...args) {
   if (res.status === 401) {
     localStorage.removeItem('vex_token');
     localStorage.removeItem('vex_user');
-    window.location.href = '/login';
+    // Solo redirigir si no estamos en una página pública
+    if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/register')) {
+      window.location.href = '/login';
+    }
   }
   return res;
 }

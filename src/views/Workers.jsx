@@ -46,9 +46,19 @@ export default function Workers() {
 
   const handleDeletePhoto = async (id) => {
     if (!confirm('¿Eliminar la foto de este trabajador?')) return;
-    const res = await api.deleteWorkerPhoto(id);
-    if (res.ok) {
-      load();
+    try {
+      const res = await api.deleteWorkerPhoto(id);
+      if (res.ok) {
+        load();
+      } else if (res.status === 403) {
+        alert('Error: No tienes permisos de administrador para eliminar fotos');
+      } else if (res.status !== 401) { // 401 ya es manejado por apiFetch
+        const errorData = await res.json();
+        alert(`Error al eliminar foto: ${errorData.error || 'Error desconocido'}`);
+      }
+    } catch (error) {
+      console.error('Error al eliminar foto:', error);
+      alert('Error de conexión al eliminar foto');
     }
   };
 
