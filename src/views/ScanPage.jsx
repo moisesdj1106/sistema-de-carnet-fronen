@@ -45,14 +45,27 @@ export default function ScanPage() {
       const data = await res.json();
       
       // Verificar estructura mínima requerida
-      if (!data.worker || !data.attendance) {
+      if (!data.worker) {
         console.error('Respuesta del servidor incompleta:', data);
         setError('Error: Respuesta del servidor incompleta');
         processingRef.current = false;
         return;
       }
-      
-      setResult(data);
+
+      // Manejar casos donde falta "attendance"
+      if (!data.attendance) {
+        console.warn('Falta información de asistencia en la respuesta:', data);
+        setResult({
+          ...data,
+          attendance: {
+            event_type: 'desconocido',
+            logged_at: new Date().toISOString(),
+          },
+        });
+      } else {
+        setResult(data);
+      }
+
       setTimeout(() => {
         setResult(null);
         processingRef.current = false;
