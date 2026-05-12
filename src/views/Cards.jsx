@@ -57,7 +57,7 @@ function CardPreview({ card }) {
           marginBottom: 10,
         }}>
           {card.photo_url
-            ? <img src={card.photo_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            ? <img src={`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000'}${card.photo_url}`} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, color: '#555' }}>👤</div>
           }
         </div>
@@ -218,7 +218,7 @@ export default function Cards() {
                 <td>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     {c.photo_url
-                      ? <img src={c.photo_url} alt="" style={{ width: 34, height: 34, borderRadius: 8, objectFit: 'cover' }} />
+                      ? <img src={`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000'}${c.photo_url}`} alt="" style={{ width: 34, height: 34, borderRadius: 8, objectFit: 'cover' }} />
                       : <div style={{ width: 34, height: 34, borderRadius: 8, background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>👤</div>
                     }
                     <strong>{c.full_name}</strong>

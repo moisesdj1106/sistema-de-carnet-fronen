@@ -126,7 +126,8 @@ export async function generateCardPDF(card) {
   ctx.clip();
   if (card.photo_url) {
     try {
-      const photo = await loadImage(card.photo_url);
+      const photoUrl = card.photo_url.startsWith('http') ? card.photo_url : `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000'}${card.photo_url}`;
+      const photo = await loadImage(photoUrl);
       const s  = Math.max(PHOTO_SIZE / photo.width, PHOTO_SIZE / photo.height);
       const pw = photo.width * s;
       const ph = photo.height * s;
