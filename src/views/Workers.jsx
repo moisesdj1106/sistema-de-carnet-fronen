@@ -49,10 +49,9 @@ export default function Workers() {
     try {
       const res = await api.deleteWorkerPhoto(id);
       if (res.ok) {
+        alert('Foto eliminada correctamente');
         load();
-      } else if (res.status === 403) {
-        alert('Error: No tienes permisos de administrador para eliminar fotos');
-      } else if (res.status !== 401) { // 401 ya es manejado por apiFetch
+      } else {
         const errorData = await res.json();
         alert(`Error al eliminar foto: ${errorData.error || 'Error desconocido'}`);
       }

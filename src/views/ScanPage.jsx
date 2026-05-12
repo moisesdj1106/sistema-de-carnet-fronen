@@ -52,19 +52,18 @@ export default function ScanPage() {
         return;
       }
 
-      // Manejar casos donde falta "attendance"
-      if (!data.attendance) {
-        console.warn('Falta información de asistencia en la respuesta:', data);
-        setResult({
-          ...data,
-          attendance: {
-            event_type: 'desconocido',
-            logged_at: new Date().toISOString(),
-          },
-        });
-      } else {
-        setResult(data);
-      }
+      // Ajustar el manejo de event_type para evitar errores
+      const eventType = data.attendance?.event_type || 'desconocido';
+      const eventLabel = eventType === 'entry' ? '✅ ENTRADA' : eventType === 'exit' ? '🚪 SALIDA' : '❓ DESCONOCIDO';
+
+      setResult({
+        ...data,
+        attendance: {
+          ...data.attendance,
+          event_type: eventType,
+          event_label: eventLabel,
+        },
+      });
 
       setTimeout(() => {
         setResult(null);
@@ -215,7 +214,7 @@ export default function ScanPage() {
             color: result.attendance.event_type === 'entry' ? '#2e7d32' : '#c62828',
             fontWeight: 800, fontSize: 17, letterSpacing: 1,
           }}>
-            {result.attendance.event_type === 'entry' ? '✅ ENTRADA' : '🚪 SALIDA'}
+            {result.attendance.event_type === 'entry' ? '✅ ENTRADA' : result.attendance.event_type === 'exit' ? '🚪 SALIDA' : '❓ DESCONOCIDO'}
           </div>
           <div style={{ color: '#aaa', fontSize: 13, marginTop: 10 }}>
             {result.attendance.logged_at ? new Date(result.attendance.logged_at).toLocaleTimeString('es-VE', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : new Date().toLocaleTimeString('es-VE', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
