@@ -72,7 +72,7 @@ function CardPreview({ card }) {
 
         {/* Puesto */}
         <div style={{
-          color: '#cc0000', fontSize: 8, fontWeight: 700,
+          color: '#dc0000ff',WebkitTextStroke: '0.5px white', fontSize: 8, fontWeight: 700,
           letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 4,
         }}>
           {card.position_name || 'Sin puesto'}
@@ -80,7 +80,7 @@ function CardPreview({ card }) {
 
         {/* Cédula */}
         <div style={{ color: 'rgba(200,200,220,0.7)', fontSize: 8, marginBottom: 10 }}>
-          C.I.: {card.cedula}
+          DNI: {card.cedula}
         </div>
 
         {/* Línea divisoria */}
