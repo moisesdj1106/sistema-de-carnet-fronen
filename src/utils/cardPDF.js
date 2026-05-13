@@ -127,9 +127,25 @@ export async function generateCardPDF(card) {
   ctx.clip();
   if (card.photo_url || card.id) {
     try {
-      // Usar el nuevo endpoint de foto
-      const photoUrl = api.getWorkerPhoto(card.id);
-      const photo = await loadImage(photoUrl);
+      // Intentar múltiples fuentes de foto
+      let photo = null;
+      
+      // Intento 1: Nuevo endpoint de foto
+      try {
+        const photoUrl = api.getWorkerPhoto(card.id);
+        photo = await loadImage(photoUrl);
+      } catch (error1) {
+        console.log('Error con nuevo endpoint, intentando URL compatible:', error1);
+        
+        // Intento 2: URL compatible (para fotos existentes)
+        if (card.photo_url) {
+          const photoUrl = card.photo_url.startsWith('http') ? card.photo_url : `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000'}${card.photo_url}`;
+          photo = await loadImage(photoUrl);
+        } else {
+          throw new Error('No hay URL de foto disponible');
+        }
+      }
+      
       const s  = Math.max(PHOTO_SIZE / photo.width, PHOTO_SIZE / photo.height);
       const pw = photo.width * s;
       const ph = photo.height * s;

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api';
 import { generateCardPDF } from '../utils/cardPDF';
-import { getWorkerPhotoUrl } from '../utils/photoHelper';
+import { getPhotoUrl, handlePhotoError } from '../utils/photoHelper';
 
 // Preview visual del carnet (vertical, igual al PDF)
 function CardPreview({ card }) {
@@ -58,12 +58,8 @@ function CardPreview({ card }) {
           marginBottom: 10,
         }}>
           {card.photo_url || card.id
-            ? <img src={getWorkerPhotoUrl(card.id, card.photo_url)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                onError={(e) => {
-                  // Si falla la carga, mostrar placeholder
-                  e.target.style.display = 'none';
-                  e.target.parentElement.innerHTML = '<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 28px; color: #555;">👤</div>';
-                }}
+            ? <img src={getPhotoUrl(card)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                onError={(e) => handlePhotoError(e, card, e.target)}
               />
             : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, color: '#555' }}>👤</div>
           }
@@ -225,12 +221,8 @@ export default function Cards() {
                 <td>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     {c.photo_url || c.id
-                      ? <img src={getWorkerPhotoUrl(c.id, c.photo_url)} alt="" style={{ width: 34, height: 34, borderRadius: 8, objectFit: 'cover' }}
-                          onError={(e) => {
-                            // Si falla la carga, mostrar placeholder
-                            e.target.style.display = 'none';
-                            e.target.parentElement.innerHTML = '<div style="width: 34px; height: 34px; border-radius: 8px; background: #f0f0f0; display: flex; align-items: center; justify-content: center;">👤</div>';
-                          }}
+                      ? <img src={getPhotoUrl(c)} alt="" style={{ width: 34, height: 34, borderRadius: 8, objectFit: 'cover' }}
+                          onError={(e) => handlePhotoError(e, c, e.target)}
                         />
                       : <div style={{ width: 34, height: 34, borderRadius: 8, background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>👤</div>
                     }

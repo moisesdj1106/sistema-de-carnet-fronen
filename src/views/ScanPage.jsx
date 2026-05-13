@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api';
 import { Html5Qrcode } from 'html5-qrcode';
-import { getWorkerPhotoUrl } from '../utils/photoHelper';
+import { getPhotoUrl, handlePhotoError } from '../utils/photoHelper';
 
 export default function ScanPage() {
   const [mode, setMode] = useState('qr');
@@ -213,12 +213,8 @@ export default function ScanPage() {
       {result && result.worker && (
         <div className="scan-result">
           {result.worker.photo_url || result.worker.id
-            ? <img src={getWorkerPhotoUrl(result.worker.id, result.worker.photo_url)} alt="foto" style={{ width: 88, height: 88, borderRadius: '50%', objectFit: 'cover' }}
-                onError={(e) => {
-                  // Si falla la carga, mostrar placeholder
-                  e.target.style.display = 'none';
-                  e.target.parentElement.innerHTML = '<div style="width: 88px; height: 88px; border-radius: 50%; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 36px; margin: 0 auto 12px">👤</div>';
-                }}
+            ? <img src={getPhotoUrl(result.worker)} alt="foto" style={{ width: 88, height: 88, borderRadius: '50%', objectFit: 'cover' }}
+                onError={(e) => handlePhotoError(e, result.worker, e.target)}
               />
             : <div style={{ width: 88, height: 88, borderRadius: '50%', background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 36, margin: '0 auto 12px' }}>👤</div>
           }

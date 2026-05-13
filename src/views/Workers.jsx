@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api';
 import PhotoCapture from '../components/PhotoCapture';
-import { getWorkerPhotoUrl } from '../utils/photoHelper';
+import { getPhotoUrl, handlePhotoError } from '../utils/photoHelper';
 
 const emptyForm = { full_name: '', cedula: '', position_id: '', email: '', phone: '' };
 
@@ -83,12 +83,8 @@ export default function Workers() {
                 <td>
                   {w.photo_url || w.id
                     ? <div>
-                        <img src={getWorkerPhotoUrl(w.id, w.photo_url)} alt="" style={{ width: 38, height: 38, borderRadius: '50%', objectFit: 'cover' }} 
-                          onError={(e) => {
-                            // Si falla la carga, mostrar placeholder
-                            e.target.style.display = 'none';
-                            e.target.parentElement.innerHTML = '<div style="width: 38px; height: 38px; border-radius: 50%; background: #eee; display: flex; align-items: center; justify-content: center;">👤</div>';
-                          }}
+                        <img src={getPhotoUrl(w)} alt="" style={{ width: 38, height: 38, borderRadius: '50%', objectFit: 'cover' }} 
+                          onError={(e) => handlePhotoError(e, w, e.target)}
                         />
                       </div>
                     : <div style={{ width: 38, height: 38, borderRadius: '50%', background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>👤</div>
