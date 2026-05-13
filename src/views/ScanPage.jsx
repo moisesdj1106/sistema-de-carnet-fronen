@@ -52,8 +52,12 @@ export default function ScanPage() {
         return;
       }
 
-      // Ajustar el manejo de event_type para evitar errores
-      const eventType = data.attendance?.event_type;
+      // Manejar ambas estructuras de respuesta:
+      // 1. Estructura actual: data.attendance?.event_type (backend local)
+      // 2. Estructura alternativa: data.event_type (backend en Render)
+      const eventType = data.attendance?.event_type || data.event_type;
+      const loggedAt = data.attendance?.logged_at || data.logged_at;
+      
       const eventLabel = eventType === 'entry' ? '✅ ENTRADA' : eventType === 'exit' ? '🚪 SALIDA' : '❓ DESCONOCIDO';
 
       if (!eventType) {
@@ -65,6 +69,7 @@ export default function ScanPage() {
         attendance: {
           ...data.attendance,
           event_type: eventType || 'desconocido',
+          logged_at: loggedAt || new Date().toISOString(),
           event_label: eventLabel,
         },
       });
@@ -204,7 +209,7 @@ export default function ScanPage() {
         )}
       </div>
 
-      {result && result.worker && result.attendance && (
+      {result && result.worker && (
         <div className="scan-result">
           {result.worker.photo_url
             ? <img src={`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000'}${result.worker.photo_url}`} alt="foto" style={{ width: 88, height: 88, borderRadius: '50%', objectFit: 'cover' }} />
@@ -214,14 +219,14 @@ export default function ScanPage() {
           <div className="worker-pos">{result.worker.position_name || '-'}</div>
           <div style={{
             display: 'inline-block', padding: '8px 28px', borderRadius: 24,
-            background: result.attendance.event_type === 'entry' ? '#e8f5e9' : '#fce4e4',
-            color: result.attendance.event_type === 'entry' ? '#2e7d32' : '#c62828',
+            background: result.attendance?.event_type === 'entry' ? '#e8f5e9' : '#fce4e4',
+            color: result.attendance?.event_type === 'entry' ? '#2e7d32' : '#c62828',
             fontWeight: 800, fontSize: 17, letterSpacing: 1,
           }}>
-            {result.attendance.event_type === 'entry' ? '✅ ENTRADA' : result.attendance.event_type === 'exit' ? '🚪 SALIDA' : '❓ DESCONOCIDO'}
+            {result.attendance?.event_type === 'entry' ? '✅ ENTRADA' : result.attendance?.event_type === 'exit' ? '🚪 SALIDA' : '❓ DESCONOCIDO'}
           </div>
           <div style={{ color: '#aaa', fontSize: 13, marginTop: 10 }}>
-            {result.attendance.logged_at ? new Date(result.attendance.logged_at).toLocaleTimeString('es-VE', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : new Date().toLocaleTimeString('es-VE', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+            {result.attendance?.logged_at ? new Date(result.attendance.logged_at).toLocaleTimeString('es-VE', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : new Date().toLocaleTimeString('es-VE', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
           </div>
         </div>
       )}

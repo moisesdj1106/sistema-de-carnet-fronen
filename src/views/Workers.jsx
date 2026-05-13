@@ -44,6 +44,22 @@ export default function Workers() {
     load();
   };
 
+  const handleDeletePhoto = async (id) => {
+    if (!confirm('¿Eliminar la foto de este trabajador?')) return;
+    try {
+      const res = await api.deleteWorkerPhoto(id);
+      if (res.ok) {
+        load();
+      } else {
+        const data = await res.json();
+        alert(data.error || 'Error al eliminar foto');
+      }
+    } catch (error) {
+      console.error('Error al eliminar foto:', error);
+      alert(error.message || 'Error al eliminar foto');
+    }
+  };
+
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
@@ -106,6 +122,7 @@ export default function Workers() {
                 <PhotoCapture
                   onPhoto={file => setPhoto(file)}
                   currentUrl={editing ? workers.find(w => w.id === editing)?.photo_url : null}
+                  onDeletePhoto={editing ? () => handleDeletePhoto(editing) : null}
                 />
               </div>
               <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>

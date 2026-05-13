@@ -5,8 +5,9 @@ import { useState, useRef, useCallback } from 'react';
  * Props:
  *   onPhoto(file) — callback con el File resultante
  *   currentUrl    — URL de foto existente (para preview)
+ *   onDeletePhoto — función para eliminar foto existente (opcional)
  */
-export default function PhotoCapture({ onPhoto, currentUrl }) {
+export default function PhotoCapture({ onPhoto, currentUrl, onDeletePhoto }) {
   const [mode, setMode] = useState('idle');       // idle | camera | preview
   const [preview, setPreview] = useState(null);   // data URL para mostrar
   const [camError, setCamError] = useState('');
@@ -76,6 +77,16 @@ export default function PhotoCapture({ onPhoto, currentUrl }) {
     if (fileRef.current) fileRef.current.value = '';
   };
 
+  const handleDeletePhoto = () => {
+    if (currentUrl && onDeletePhoto) {
+      // Si hay una foto existente y hay función onDeletePhoto, llamarla
+      onDeletePhoto();
+    } else {
+      // Si no hay foto existente o no hay función onDeletePhoto, solo resetear
+      reset();
+    }
+  };
+
   // ── Render ─────────────────────────────────────────────────────────────
   const displayUrl = preview || currentUrl;
 
@@ -91,7 +102,7 @@ export default function PhotoCapture({ onPhoto, currentUrl }) {
           <img src={displayUrl} alt="preview"
             style={{ width: 72, height: 72, borderRadius: '50%', objectFit: 'cover', border: '3px solid #cc0000' }}
           />
-          <button type="button" onClick={reset}
+          <button type="button" onClick={handleDeletePhoto}
             style={{ fontSize: 12, color: '#cc0000', background: '#fff0f0', border: '1px solid #ffcccc', borderRadius: 6, padding: '4px 12px', cursor: 'pointer' }}>
             ✕ Quitar foto
           </button>
