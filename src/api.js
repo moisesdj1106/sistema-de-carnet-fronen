@@ -37,34 +37,8 @@ export const api = {
   createWorker: (form) => apiFetch(`${BASE}/workers`, { method: 'POST', headers: headers(true), body: form }),
   updateWorker: (id, form) => apiFetch(`${BASE}/workers/${id}`, { method: 'PUT', headers: headers(true), body: form }),
   deleteWorker: (id) => apiFetch(`${BASE}/workers/${id}`, { method: 'DELETE', headers: headers() }),
-  deleteWorkerPhoto: async (id) => {
-    console.log('Eliminando foto del trabajador ID:', id);
-    try {
-      const res = await fetch(`${BASE}/workers/${id}/photo`, { 
-        method: 'DELETE', 
-        headers: headers() 
-      });
-      console.log('Respuesta delete photo:', res.status, res.statusText);
-      
-      if (!res.ok) {
-        // Si es 404, la ruta no existe
-        if (res.status === 404) {
-          throw new Error('Ruta para eliminar foto no encontrada en el servidor');
-        }
-        // Para otros errores, intentar obtener mensaje de error del JSON
-        try {
-          const errorData = await res.json();
-          throw new Error(errorData.error || `Error ${res.status}: ${res.statusText}`);
-        } catch {
-          throw new Error(`Error ${res.status}: ${res.statusText}`);
-        }
-      }
-      return res;
-    } catch (error) {
-      console.error('Error en deleteWorkerPhoto:', error);
-      throw error;
-    }
-  },
+  getWorkerPhoto: (id) => `${BASE}/workers/${id}/photo`,
+
 
   // Cards
   getCards: () => apiFetch(`${BASE}/cards`, { headers: headers() }),

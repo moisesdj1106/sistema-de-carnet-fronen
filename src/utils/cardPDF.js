@@ -1,4 +1,5 @@
 import jsPDF from 'jspdf';
+import { api } from '../api';
 
 const CW = 638;   // ~54mm a 300dpi
 const CH = 1012;  // ~85.6mm a 300dpi
@@ -124,9 +125,10 @@ export async function generateCardPDF(card) {
   ctx.beginPath();
   ctx.arc(photoCX, photoCY, photoR, 0, Math.PI * 2);
   ctx.clip();
-  if (card.photo_url) {
+  if (card.photo_url || card.id) {
     try {
-      const photoUrl = card.photo_url.startsWith('http') ? card.photo_url : `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000'}${card.photo_url}`;
+      // Usar el nuevo endpoint de foto
+      const photoUrl = api.getWorkerPhoto(card.id);
       const photo = await loadImage(photoUrl);
       const s  = Math.max(PHOTO_SIZE / photo.width, PHOTO_SIZE / photo.height);
       const pw = photo.width * s;

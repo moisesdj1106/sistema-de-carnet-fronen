@@ -26,6 +26,7 @@ CREATE TABLE workers (
   email VARCHAR(150),
   phone VARCHAR(20),
   photo_url TEXT,
+  photo_data BYTEA, -- Almacena fotos directamente en la base de datos
   created_at TIMESTAMP DEFAULT NOW()
 );
 

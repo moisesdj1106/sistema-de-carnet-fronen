@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api';
+import { getWorkerPhotoUrl } from '../utils/photoHelper';
 
 export default function AttendanceToday() {
   const [logs, setLogs] = useState([]);
@@ -63,8 +64,14 @@ export default function AttendanceToday() {
               <tr key={l.id}>
                 <td>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    {l.photo_url
-                      ? <img src={`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000'}${l.photo_url}`} alt="" style={{ width: 34, height: 34, borderRadius: '50%', objectFit: 'cover' }} />
+                    {l.photo_url || l.worker_id
+                      ? <img src={getWorkerPhotoUrl(l.worker_id, l.photo_url)} alt="" style={{ width: 34, height: 34, borderRadius: '50%', objectFit: 'cover' }}
+                          onError={(e) => {
+                            // Si falla la carga, mostrar placeholder
+                            e.target.style.display = 'none';
+                            e.target.parentElement.innerHTML = '<div style="width: 34px; height: 34px; border-radius: 50%; background: #eee; display: flex; align-items: center; justify-content: center;">👤</div>';
+                          }}
+                        />
                       : <div style={{ width: 34, height: 34, borderRadius: '50%', background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>👤</div>
                     }
                     <strong>{l.full_name}</strong>

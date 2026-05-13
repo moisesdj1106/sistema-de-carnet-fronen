@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api';
 import { generateCardPDF } from '../utils/cardPDF';
+import { getWorkerPhotoUrl } from '../utils/photoHelper';
 
 // Preview visual del carnet (vertical, igual al PDF)
 function CardPreview({ card }) {
@@ -56,8 +57,14 @@ function CardPreview({ card }) {
           boxShadow: '0 0 0 4px rgba(204,0,0,0.2)',
           marginBottom: 10,
         }}>
-          {card.photo_url
-            ? <img src={`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000'}${card.photo_url}`} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          {card.photo_url || card.id
+            ? <img src={getWorkerPhotoUrl(card.id, card.photo_url)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                onError={(e) => {
+                  // Si falla la carga, mostrar placeholder
+                  e.target.style.display = 'none';
+                  e.target.parentElement.innerHTML = '<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 28px; color: #555;">👤</div>';
+                }}
+              />
             : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, color: '#555' }}>👤</div>
           }
         </div>
@@ -72,7 +79,7 @@ function CardPreview({ card }) {
 
         {/* Puesto */}
         <div style={{
-          color: '#dc0000ff',WebkitTextStroke: '0.5px white', fontSize: 8, fontWeight: 700,
+          color: '#dc0000ff',textShadow: '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000', fontSize: 8, fontWeight: 700,
           letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 4,
         }}>
           {card.position_name || 'Sin puesto'}
@@ -217,8 +224,14 @@ export default function Cards() {
               <tr key={c.id}>
                 <td>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    {c.photo_url
-                      ? <img src={`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000'}${c.photo_url}`} alt="" style={{ width: 34, height: 34, borderRadius: 8, objectFit: 'cover' }} />
+                    {c.photo_url || c.id
+                      ? <img src={getWorkerPhotoUrl(c.id, c.photo_url)} alt="" style={{ width: 34, height: 34, borderRadius: 8, objectFit: 'cover' }}
+                          onError={(e) => {
+                            // Si falla la carga, mostrar placeholder
+                            e.target.style.display = 'none';
+                            e.target.parentElement.innerHTML = '<div style="width: 34px; height: 34px; border-radius: 8px; background: #f0f0f0; display: flex; align-items: center; justify-content: center;">👤</div>';
+                          }}
+                        />
                       : <div style={{ width: 34, height: 34, borderRadius: 8, background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>👤</div>
                     }
                     <strong>{c.full_name}</strong>

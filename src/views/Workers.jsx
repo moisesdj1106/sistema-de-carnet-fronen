@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api';
 import PhotoCapture from '../components/PhotoCapture';
+import { getWorkerPhotoUrl } from '../utils/photoHelper';
 
 const emptyForm = { full_name: '', cedula: '', position_id: '', email: '', phone: '' };
 
@@ -31,7 +32,14 @@ export default function Workers() {
   const handleSubmit = async (e) => {
     e.preventDefault(); setLoading(true);
     const fd = new FormData();
-    Object.entries(form).forEach(([k, v]) => fd.append(k, v));
+    Object.entries(form).forEach(([k, v]) => {
+      if (k === 'remove_photo') {
+        // Solo enviar remove_photo si es true
+        if (v === true) fd.append(k, 'true');
+      } else {
+        fd.append(k, v);
+      }
+    });
     if (photo) fd.append('photo', photo);
     const res = editing ? await api.updateWorker(editing, fd) : await api.createWorker(fd);
     if (res.ok) { setShowModal(false); load(); }
@@ -44,19 +52,13 @@ export default function Workers() {
     load();
   };
 
-  const handleDeletePhoto = async (id) => {
-    if (!confirm('¿Eliminar la foto de este trabajador?')) return;
-    try {
-      const res = await api.deleteWorkerPhoto(id);
-      if (res.ok) {
-        load();
-      } else {
-        const data = await res.json();
-        alert(data.error || 'Error al eliminar foto');
-      }
-    } catch (error) {
-      console.error('Error al eliminar foto:', error);
-      alert(error.message || 'Error al eliminar foto');
+  // Función para eliminar foto - se maneja dentro del formulario de actualización
+  const handleRemovePhoto = () => {
+    if (confirm('¿Eliminar la foto de este trabajador?')) {
+      // Marcar que se debe eliminar la foto
+      setPhoto(null); // Limpiar foto nueva si hay
+      // Enviar remove_photo en el formulario
+      setForm(f => ({ ...f, remove_photo: true }));
     }
   };
 
@@ -79,9 +81,15 @@ export default function Workers() {
             {workers.map(w => (
               <tr key={w.id}>
                 <td>
-                  {w.photo_url
+                  {w.photo_url || w.id
                     ? <div>
-                        <img src={`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000'}${w.photo_url}`} alt="" style={{ width: 38, height: 38, borderRadius: '50%', objectFit: 'cover' }} />
+                        <img src={getWorkerPhotoUrl(w.id, w.photo_url)} alt="" style={{ width: 38, height: 38, borderRadius: '50%', objectFit: 'cover' }} 
+                          onError={(e) => {
+                            // Si falla la carga, mostrar placeholder
+                            e.target.style.display = 'none';
+                            e.target.parentElement.innerHTML = '<div style="width: 38px; height: 38px; border-radius: 50%; background: #eee; display: flex; align-items: center; justify-content: center;">👤</div>';
+                          }}
+                        />
                       </div>
                     : <div style={{ width: 38, height: 38, borderRadius: '50%', background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>👤</div>
                   }
@@ -122,7 +130,7 @@ export default function Workers() {
                 <PhotoCapture
                   onPhoto={file => setPhoto(file)}
                   currentUrl={editing ? workers.find(w => w.id === editing)?.photo_url : null}
-                  onDeletePhoto={editing ? () => handleDeletePhoto(editing) : null}
+                  onDeletePhoto={editing ? handleRemovePhoto : null}
                 />
               </div>
               <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
