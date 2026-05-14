@@ -64,10 +64,8 @@ export default function AttendanceToday() {
               <tr key={l.id}>
                 <td>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    {l.photo_url || l.worker_id
-                      ? <img src={getPhotoUrl(l)} alt="" style={{ width: 34, height: 34, borderRadius: '50%', objectFit: 'cover' }}
-                          onError={(e) => handlePhotoError(e, l, e.target)}
-                        />
+                    {l.photo_data
+                      ? <img src={`data:image/jpeg;base64,${l.photo_data}`} alt="" style={{ width: 34, height: 34, borderRadius: '50%', objectFit: 'cover' }} />
                       : <div style={{ width: 34, height: 34, borderRadius: '50%', background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>👤</div>
                     }
                     <strong>{l.full_name}</strong>

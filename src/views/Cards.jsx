@@ -57,10 +57,8 @@ function CardPreview({ card }) {
           boxShadow: '0 0 0 4px rgba(204,0,0,0.2)',
           marginBottom: 10,
         }}>
-          {card.photo_url || card.id
-            ? <img src={getPhotoUrl(card)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                onError={(e) => handlePhotoError(e, card, e.target)}
-              />
+          {card.photo_data
+            ? <img src={`data:image/jpeg;base64,${card.photo_data}`} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, color: '#555' }}>👤</div>
           }
         </div>
@@ -220,8 +218,8 @@ export default function Cards() {
               <tr key={c.id}>
                 <td>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    {c.photo_url || c.id
-                      ? <img src={getPhotoUrl(c)} alt="" style={{ width: 34, height: 34, borderRadius: 8, objectFit: 'cover' }}
+                    {c.photo_data
+                      ? <img src={`data:image/jpeg;base64,${c.photo_data}`} alt="" style={{ width: 34, height: 34, borderRadius: 8, objectFit: 'cover' }}
                           onError={(e) => handlePhotoError(e, c, e.target)}
                         />
                       : <div style={{ width: 34, height: 34, borderRadius: 8, background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>👤</div>

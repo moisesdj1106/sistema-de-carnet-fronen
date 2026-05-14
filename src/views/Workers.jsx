@@ -81,12 +81,8 @@ export default function Workers() {
             {workers.map(w => (
               <tr key={w.id}>
                 <td>
-                  {w.photo_url || w.id
-                    ? <div>
-                        <img src={getPhotoUrl(w)} alt="" style={{ width: 38, height: 38, borderRadius: '50%', objectFit: 'cover' }} 
-                          onError={(e) => handlePhotoError(e, w, e.target)}
-                        />
-                      </div>
+                  {w.photo_data
+                    ? <img src={`data:image/jpeg;base64,${w.photo_data}`} alt="" style={{ width: 38, height: 38, borderRadius: '50%', objectFit: 'cover' }} />
                     : <div style={{ width: 38, height: 38, borderRadius: '50%', background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>👤</div>
                   }
                 </td>
@@ -125,7 +121,7 @@ export default function Workers() {
               <div style={{ marginBottom: 16 }}>
                 <PhotoCapture
                   onPhoto={file => setPhoto(file)}
-                  currentUrl={editing ? workers.find(w => w.id === editing)?.photo_url : null}
+                  currentUrl={editing ? workers.find(w => w.id === editing)?.photo_data : null}
                   onDeletePhoto={editing ? handleRemovePhoto : null}
                 />
               </div>

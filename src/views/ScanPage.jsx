@@ -212,11 +212,9 @@ export default function ScanPage() {
 
       {result && result.worker && (
         <div className="scan-result">
-          {result.worker.photo_url || result.worker.id
-            ? <img src={getPhotoUrl(result.worker)} alt="foto" style={{ width: 88, height: 88, borderRadius: '50%', objectFit: 'cover' }}
-                onError={(e) => handlePhotoError(e, result.worker, e.target)}
-              />
-            : <div style={{ width: 88, height: 88, borderRadius: '50%', background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 36, margin: '0 auto 12px' }}>👤</div>
+          {result.worker.photo_data
+            ? <img src={`data:image/jpeg;base64,${result.worker.photo_data}`} alt="foto" />
+            : <span>Sin foto</span>
           }
           <div className="worker-name">{result.worker.full_name || 'Nombre no disponible'}</div>
           <div className="worker-pos">{result.worker.position_name || '-'}</div>
